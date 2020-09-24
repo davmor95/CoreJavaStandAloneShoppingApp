@@ -20,6 +20,8 @@ public class ConnectionManager {
         } catch (SQLException throwables) {
             System.out.println("Something went wrong with ");
         }
+
+        return conn;
     }
 
 }
