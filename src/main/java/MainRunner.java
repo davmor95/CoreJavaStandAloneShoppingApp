@@ -1,5 +1,6 @@
 import exceptions.*;
 import model.Customer;
+import repo.CustomerRepo;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -7,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainRunner {
+    public static final CustomerRepo service = new CustomerRepo();
     public static void main(String[] args) {
         Scanner sc = null;
         int choice;
@@ -85,6 +87,8 @@ public class MainRunner {
                 throw new InvalidPasswordInputException("Unable to process password.");
             }
             Customer customer = new Customer(name, email, password);
+            service.addCustomer(customer);
+            System.out.println("Registered!!");
         } catch (InvalidNameException e) {
             System.out.println(e);
         } catch (InvalidEmailException e) {
