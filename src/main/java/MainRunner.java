@@ -30,8 +30,6 @@ public class MainRunner {
                     break;
             }
         }
-
-
     }
 
     private static void replaceItem(Scanner sc) {
@@ -41,6 +39,15 @@ public class MainRunner {
     }
 
     private static void login(Scanner sc) {
+        String email;
+        String password;
+        sc = new Scanner(System.in);
+        boolean valid = true;
+
+        while (valid) {
+            System.out.println("             Login     ");
+            System.out.println("+============================+");
+        }
     }
 
     private static boolean verifyPattern(Pattern p, String s) {
