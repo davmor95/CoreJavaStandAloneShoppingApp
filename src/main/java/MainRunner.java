@@ -59,6 +59,10 @@ public class MainRunner {
             } else {
                 throw new InvalidLoginPasswordException("Did not enter a proper password");
             }
+            Customer found = service.getCustomerByEmail(email);
+            if(found != null) {
+                //check if the passwords match
+            }
         }
     }
 
