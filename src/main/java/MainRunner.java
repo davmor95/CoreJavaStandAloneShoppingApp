@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class MainRunner {
     public static final CustomerRepo service = new CustomerRepo();
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidLoginEmailException, InvalidLoginPasswordException {
         Scanner sc = null;
         int choice;
         while(true) {
@@ -38,7 +38,7 @@ public class MainRunner {
     private static void buyItem(Scanner sc) {
     }
 
-    private static void login(Scanner sc) {
+    private static void login(Scanner sc) throws InvalidLoginEmailException, InvalidLoginPasswordException {
         String email;
         String password;
         sc = new Scanner(System.in);
@@ -47,6 +47,18 @@ public class MainRunner {
         while (valid) {
             System.out.println("             Login     ");
             System.out.println("+============================+");
+            System.out.println("+ Please enter email:        +:");
+            if(sc.hasNextLine()) {
+                email = sc.nextLine();
+            } else {
+                throw new InvalidLoginEmailException("Did not enter a proper email address.");
+            }
+            System.out.println("+ Please enter password:     +");
+            if(sc.hasNextLine()) {
+                password = sc.nextLine();
+            } else {
+                throw new InvalidLoginPasswordException("Did not enter a proper password");
+            }
         }
     }
 
