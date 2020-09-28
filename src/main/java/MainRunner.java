@@ -59,11 +59,35 @@ public class MainRunner {
             } else {
                 throw new InvalidLoginPasswordException("Did not enter a proper password");
             }
+
             Customer found = service.getCustomerByEmail(email);
-            if(found != null) {
-                //check if the passwords match
+            try {
+                if(found != null) {
+                    //check if the passwords match
+                    try {
+                        if(!password.equals(found.getPassword())) {
+                            throw new PasswordDoesNotMatchException("Password does not match");
+                        }
+
+                        System.out.println("Login Successful!!");
+                        valid = false;
+                        welcomeCenter(sc, found);
+                    } catch (PasswordDoesNotMatchException e) {
+                        System.out.println(e);
+                        valid = false;
+                    }
+                } else {
+                    throw new EmailNotFoundException("Email not found.");
+                }
+            } catch (EmailNotFoundException e) {
+                System.out.println(e);
             }
+
         }
+    }
+
+    private static void welcomeCenter(Scanner sc, Customer found) {
+        System.out.println("WELCOME CENTER!");
     }
 
     private static boolean verifyPattern(Pattern p, String s) {
