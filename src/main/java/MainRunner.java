@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 public class MainRunner {
     public static final CustomerRepo service = new CustomerRepo();
+    public static boolean loggedIn = false;
     public static void main(String[] args) throws InvalidLoginEmailException, InvalidLoginPasswordException {
         Scanner sc = null;
         int choice;
@@ -36,6 +37,34 @@ public class MainRunner {
     }
 
     private static void buyItem(Scanner sc) {
+        sc = new Scanner(System.in);
+        boolean stillShopping = true;
+        int choice;
+        if(loggedIn == false) {
+            System.out.println("Please log in to make a purchase");
+            return;
+        }
+        else {
+            System.out.println("     Standalone Ecommerce App            ");
+            System.out.println("+========================================+");
+            System.out.println("+  Items          Item Code         Price+");
+            System.out.println("+  1. Jacket      Ja1               $20  +" );
+            System.out.println("+  2. Jeans       Je1               $10  +");
+            System.out.println("+  3. Shirt       Sh1               $5   +");
+            System.out.println("+  4. Exit                               +");
+            System.out.println("+========================================+");
+
+            try{
+                if(sc.hasNextInt()) {
+                    choice = sc.nextInt();
+                } else {
+                    throw new InvalidChoiceBuyItemException("Invalid choice, please enter a whole number.");
+                }
+                
+            } catch (InvalidChoiceBuyItemException e) {
+                System.out.println(e);
+            }
+        }
     }
 
     private static void login(Scanner sc) throws InvalidLoginEmailException, InvalidLoginPasswordException {
@@ -47,7 +76,7 @@ public class MainRunner {
         while (valid) {
             System.out.println("             Login     ");
             System.out.println("+============================+");
-            System.out.println("+ Please enter email:        +:");
+            System.out.println("+ Please enter email:        +");
             if(sc.hasNextLine()) {
                 email = sc.nextLine();
             } else {
@@ -71,10 +100,11 @@ public class MainRunner {
 
                         System.out.println("Login Successful!!");
                         valid = false;
-                        welcomeCenter(sc, found);
+
                     } catch (PasswordDoesNotMatchException e) {
                         System.out.println(e);
                         valid = false;
+                        loggedIn = true;
                     }
                 } else {
                     throw new EmailNotFoundException("Email not found.");
@@ -86,9 +116,6 @@ public class MainRunner {
         }
     }
 
-    private static void welcomeCenter(Scanner sc, Customer found) {
-        System.out.println("WELCOME CENTER!");
-    }
 
     private static boolean verifyPattern(Pattern p, String s) {
         Matcher matcher = p.matcher(s);

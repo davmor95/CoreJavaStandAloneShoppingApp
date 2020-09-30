@@ -42,7 +42,7 @@ public class CustomerRepo implements CustomerRepoImpl{
                 String cust_password = resultSet.getString(4);
 
                 customer = new Customer(cust_name, cust_email, cust_password);
-                System.out.println(customer);
+//                System.out.println(customer);
 
             }
 
