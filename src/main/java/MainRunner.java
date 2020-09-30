@@ -1,15 +1,19 @@
 import exceptions.*;
 import model.Customer;
+import model.CustomerOrder;
+import repo.CustomerOrderRepo;
 import repo.CustomerRepo;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+//TODO create a log out function to clear our loggedIn and currentUser
 public class MainRunner {
     public static final CustomerRepo service = new CustomerRepo();
-    public static boolean loggedIn = false;
+    public static final CustomerOrderRepo customerService = new CustomerOrderRepo();
+//    public static boolean loggedIn;
+    public static Customer currentUser = new Customer();
     public static void main(String[] args) throws InvalidLoginEmailException, InvalidLoginPasswordException {
         Scanner sc = null;
         int choice;
@@ -29,18 +33,30 @@ public class MainRunner {
                 case 4:
                     replaceItem(sc);
                     break;
+                case 5:
+                    logout();
+                    break;
+                case 6:
+                    System.out.println("Thank you for shopping with us!");
+                    System.exit(0);
             }
         }
     }
 
+    private static void logout() {
+        currentUser = null;
+        System.out.println("Successfully logged out!");
+    }
+
     private static void replaceItem(Scanner sc) {
+        sc = new Scanner(System.in);
     }
 
     private static void buyItem(Scanner sc) {
         sc = new Scanner(System.in);
         boolean stillShopping = true;
         int choice;
-        if(loggedIn == false) {
+        if(currentUser == null) {
             System.out.println("Please log in to make a purchase");
             return;
         }
@@ -60,6 +76,19 @@ public class MainRunner {
                 } else {
                     throw new InvalidChoiceBuyItemException("Invalid choice, please enter a whole number.");
                 }
+                switch (choice) {
+                    case 1:
+                        CustomerOrder jacketOrder = new CustomerOrder("Ja1", "Jacket", 20.00, currentUser.getEmail());
+                        customerService.addOrder(jacketOrder);
+                        break;
+                    case 2:
+                        CustomerOrder jeanOrder = new CustomerOrder("Je1", "Jeans", 10.00, currentUser.getEmail());
+                        customerService.addOrder(jeanOrder);
+                    case 3:
+                        CustomerOrder shirtOrder = new CustomerOrder("Sh1", "Shirt", 5.00, currentUser.getEmail());
+                        customerService.addOrder(shirtOrder);
+
+                }
                 
             } catch (InvalidChoiceBuyItemException e) {
                 System.out.println(e);
@@ -72,6 +101,9 @@ public class MainRunner {
         String password;
         sc = new Scanner(System.in);
         boolean valid = true;
+        if(currentUser != null) {
+            System.out.println("Someone is currently logged in! Please wait for someone to logout. Thank you!");
+        }
 
         while (valid) {
             System.out.println("             Login     ");
@@ -100,11 +132,12 @@ public class MainRunner {
 
                         System.out.println("Login Successful!!");
                         valid = false;
+                        currentUser = found;
 
                     } catch (PasswordDoesNotMatchException e) {
                         System.out.println(e);
                         valid = false;
-                        loggedIn = true;
+//                        loggedIn = true;
                     }
                 } else {
                     throw new EmailNotFoundException("Email not found.");

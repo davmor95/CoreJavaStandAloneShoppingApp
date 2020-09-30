@@ -15,7 +15,8 @@ public class CustomerOrderRepo implements CustomerOrderRepoImpl{
             PreparedStatement preparedStatement = conn.prepareStatement("insert into CustomerOrder (itemCode, itemName, price, email) values(?, ?, ?, ?)");
             preparedStatement.setString(1, order.getItemCode());
             preparedStatement.setString(2, order.getItemName());
-            preparedStatement.setString(3, order.getEmail());
+            preparedStatement.setString(3, Double.toString(order.getPrice()));
+            preparedStatement.setString(4, order.getEmail());
 
             int insert = preparedStatement.executeUpdate();
             if(insert > 0) {
