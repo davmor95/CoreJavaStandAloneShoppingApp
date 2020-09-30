@@ -8,7 +8,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-//TODO create a log out function to clear our loggedIn and currentUser
 public class MainRunner {
     public static final CustomerRepo service = new CustomerRepo();
     public static final CustomerOrderRepo customerService = new CustomerOrderRepo();
@@ -19,6 +18,7 @@ public class MainRunner {
         int choice;
         while(true) {
             System.out.println("----------------------------------------------------------------------");
+            System.out.println("Current User: " + currentUser);
             choice = getChoice(sc);
             switch (choice) {
                 case 1:
@@ -44,12 +44,18 @@ public class MainRunner {
     }
 
     private static void logout() {
+        if(currentUser == null) {
+            System.out.println("Not currently logged in therefore you can't log out.");
+            return;
+        }
         currentUser = null;
         System.out.println("Successfully logged out!");
     }
 
     private static void replaceItem(Scanner sc) {
         sc = new Scanner(System.in);
+        // how to replace an item
+        //first we ne
     }
 
     private static void buyItem(Scanner sc) {
@@ -103,6 +109,7 @@ public class MainRunner {
         boolean valid = true;
         if(currentUser != null) {
             System.out.println("Someone is currently logged in! Please wait for someone to logout. Thank you!");
+            return;
         }
 
         while (valid) {
@@ -221,7 +228,8 @@ public class MainRunner {
             System.out.println("+   2.Login                    +");
             System.out.println("+   3.Buy an item              +");
             System.out.println("+   4.Replace an item          +");
-            System.out.println("+   5.Exit                     +");
+            System.out.println("+   5.Logout                   +");
+            System.out.println("+   6.Exit                     +");
             System.out.println("+==============================+");
 
             choice = sc.nextInt();
