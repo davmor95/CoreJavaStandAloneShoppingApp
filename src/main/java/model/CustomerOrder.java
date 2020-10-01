@@ -20,6 +20,14 @@ public class CustomerOrder {
         this.email = email;
     }
 
+    public CustomerOrder(Integer orderID, String itemCode, String itemName, Double price, String email) {
+        this.orderID = orderID;
+        this.itemCode = itemCode;
+        this.itemName = itemName;
+        this.price = price;
+        this.email = email;
+    }
+
     public Integer getOrderID() {
         return orderID;
     }

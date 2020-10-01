@@ -4,15 +4,15 @@ import model.CustomerOrder;
 import repo.CustomerOrderRepo;
 import repo.CustomerRepo;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class MainRunner {
     public static final CustomerRepo service = new CustomerRepo();
     public static final CustomerOrderRepo customerService = new CustomerOrderRepo();
 //    public static boolean loggedIn;
-    public static Customer currentUser = new Customer();
+    public static Customer currentUser = null;
+    public static List<CustomerOrder> customerOrderList = new ArrayList<CustomerOrder>();
     public static void main(String[] args) throws InvalidLoginEmailException, InvalidLoginPasswordException {
         Scanner sc = null;
         int choice;
@@ -37,25 +37,32 @@ public class MainRunner {
                     logout();
                     break;
                 case 6:
+                    showOrders();
+                case 7:
                     System.out.println("Thank you for shopping with us!");
                     System.exit(0);
             }
         }
     }
 
+    private static void showOrders() {
+    }
+
     private static void logout() {
         if(currentUser == null) {
             System.out.println("Not currently logged in therefore you can't log out.");
             return;
+        } else {
+            currentUser = null;
+            customerOrderList.clear();
+            System.out.println("Successfully logged out!");
         }
-        currentUser = null;
-        System.out.println("Successfully logged out!");
     }
 
     private static void replaceItem(Scanner sc) {
         sc = new Scanner(System.in);
         // how to replace an item
-        //first we ne
+        //first we ne nee
     }
 
     private static void buyItem(Scanner sc) {
@@ -229,7 +236,8 @@ public class MainRunner {
             System.out.println("+   3.Buy an item              +");
             System.out.println("+   4.Replace an item          +");
             System.out.println("+   5.Logout                   +");
-            System.out.println("+   6.Exit                     +");
+            System.out.println("+   6.Show orders              +");
+            System.out.println("+   7.Exit                     +");
             System.out.println("+==============================+");
 
             choice = sc.nextInt();

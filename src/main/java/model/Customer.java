@@ -1,9 +1,13 @@
 package model;
 
+import java.sql.Statement;
+import java.util.Stack;
+
 public class Customer {
     private String name;
     private String email;
     private String password;
+
 
     public Customer() {
         this( "N/A", "N/A", "N/A");
