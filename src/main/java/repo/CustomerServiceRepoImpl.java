@@ -13,6 +13,7 @@ public interface CustomerServiceRepoImpl {
     public boolean addInvoice(Invoice invoice);
     public List<Invoice> getInvoiceByEmail(String email);
     public boolean addItemInvoice(ItemInvoice itemInvoice);
+    public List<ItemInvoice> getAllItemsByInvoiceNumber(String invoiceNumber);
 
 
 }

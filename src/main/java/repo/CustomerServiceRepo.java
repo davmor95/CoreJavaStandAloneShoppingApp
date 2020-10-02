@@ -35,6 +35,7 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
     public boolean deleteAllOrdersByEmail(String email) {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("delete from CustomerOrder where email = ?");
+            preparedStatement.setString(1, email);
             int insert = preparedStatement.executeUpdate();
             if(insert > 0) {
                 return true;
@@ -50,8 +51,9 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
     public List<CustomerOrder> getAllCustomerOrderByEmail(String email) {
         List<CustomerOrder> customerOrderList = new ArrayList<CustomerOrder>();
 
-        try(Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from CustomerOrder where email = ?")) {
+        try( PreparedStatement preparedStatement = conn.prepareStatement("select * from CustomerOrder where email = ?")) {
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 Integer orderId = Integer.parseInt(resultSet.getString(1));
                 String itemCode = resultSet.getString(2);
@@ -72,10 +74,12 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
     @Override
     public boolean addInvoice(Invoice invoice) {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement("insert into invoice (invoiceNumber, email, invoiceDate) values (?, ?, ?)");
+            PreparedStatement preparedStatement = conn.prepareStatement("insert into invoice (invoiceNumber, email, invoiceDate, totalCost) values (?, ?, ?, ?)");
             preparedStatement.setString(1, invoice.getInvoiceNumber());
             preparedStatement.setString(2, invoice.getEmail());
             preparedStatement.setString(3, invoice.getInvoiceDate());
+            preparedStatement.setDouble(4, invoice.getTotalCost());
+
 
             int insert = preparedStatement.executeUpdate();
 
@@ -90,18 +94,20 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
         return false;
     }
 
-
+//TODO redo this function
     @Override
     public List<Invoice> getInvoiceByEmail(String email) {
         List<Invoice> invoiceList = new ArrayList<Invoice>();
 
-        try (Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from invoice where email = ?")){
+        try (PreparedStatement preparedStatement = conn.prepareStatement("select * from invoice where email = ?")){
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String invoiceNumber = resultSet.getString(1);
                 String customerEmail = resultSet.getString(2);
                 String date = resultSet.getString(3);
-                Invoice invoice = new Invoice(invoiceNumber, customerEmail, date);
+                Double totalCost = resultSet.getDouble(4);
+                Invoice invoice = new Invoice(invoiceNumber, customerEmail, date, totalCost);
                 invoiceList.add(invoice);
             }
         } catch (SQLException throwables) {
@@ -116,7 +122,7 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
             PreparedStatement preparedStatement = conn.prepareStatement("insert into itemInvoice (itemCode, itemName, price, invoiceNumber) values (?, ?, ?, ?)");
             preparedStatement.setString(1, itemInvoice.getItemCode());
             preparedStatement.setString(2, itemInvoice.getItemName());
-            preparedStatement.setString(3, Double.toString(itemInvoice.getPrice()));
+            preparedStatement.setDouble(3, itemInvoice.getPrice());
             preparedStatement.setString(4, itemInvoice.getInvoiceNumber());
 
             int insert = preparedStatement.executeUpdate();
@@ -130,5 +136,27 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
             throwables.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public List<ItemInvoice> getAllItemsByInvoiceNumber(String invoiceNumber) {
+        List<ItemInvoice> itemInvoiceList = new ArrayList<ItemInvoice>();
+        try (PreparedStatement preparedStatement = conn.prepareStatement("select * from itemInvoice where invoiceNumber = ?")){
+            preparedStatement.setString(1, invoiceNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String itemCode = resultSet.getString(1);
+                String itemName = resultSet.getString(2);
+                Double price = resultSet.getDouble(3);
+                String invoiceNum = resultSet.getString(4);
+
+                ItemInvoice itemInvoice = new ItemInvoice(itemCode, itemName, price, invoiceNum);
+                itemInvoiceList.add(itemInvoice);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 }
