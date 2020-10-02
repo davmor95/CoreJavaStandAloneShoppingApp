@@ -1,7 +1,7 @@
 import exceptions.*;
 import model.Customer;
 import model.CustomerOrder;
-import repo.CustomerOrderRepo;
+import repo.CustomerServiceRepo;
 import repo.CustomerRepo;
 
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 public class MainRunner {
     public static final CustomerRepo service = new CustomerRepo();
-    public static final CustomerOrderRepo customerService = new CustomerOrderRepo();
+    public static final CustomerServiceRepo customerService = new CustomerServiceRepo();
 //    public static boolean loggedIn;
     public static Customer currentUser = null;
     public static List<CustomerOrder> customerOrderList = new ArrayList<CustomerOrder>();
@@ -37,7 +37,8 @@ public class MainRunner {
                     logout();
                     break;
                 case 6:
-                    showOrders();
+                    createInvoice();
+                    break;
                 case 7:
                     System.out.println("Thank you for shopping with us!");
                     System.exit(0);
@@ -45,7 +46,13 @@ public class MainRunner {
         }
     }
 
-    private static void showOrders() {
+    private static void createInvoice() {
+        Random random = new Random();
+        Integer number = random.nextInt(999999);
+        String invoiceNumber = Integer.toString(number);
+
+        System.out.println(invoiceNumber);
+
     }
 
     private static void logout() {
@@ -85,24 +92,24 @@ public class MainRunner {
 
             try{
                 if(sc.hasNextInt()) {
+
                     choice = sc.nextInt();
+                    switch (choice) {
+                        case 1:
+                            CustomerOrder jacketOrder = new CustomerOrder("Ja1", "Jacket", 20.00, currentUser.getEmail());
+                            customerService.addOrder(jacketOrder);
+                            break;
+                        case 2:
+                            CustomerOrder jeanOrder = new CustomerOrder("Je1", "Jeans", 10.00, currentUser.getEmail());
+                            customerService.addOrder(jeanOrder);
+                        case 3:
+                            CustomerOrder shirtOrder = new CustomerOrder("Sh1", "Shirt", 5.00, currentUser.getEmail());
+                            customerService.addOrder(shirtOrder);
+
+                    }
                 } else {
                     throw new InvalidChoiceBuyItemException("Invalid choice, please enter a whole number.");
                 }
-                switch (choice) {
-                    case 1:
-                        CustomerOrder jacketOrder = new CustomerOrder("Ja1", "Jacket", 20.00, currentUser.getEmail());
-                        customerService.addOrder(jacketOrder);
-                        break;
-                    case 2:
-                        CustomerOrder jeanOrder = new CustomerOrder("Je1", "Jeans", 10.00, currentUser.getEmail());
-                        customerService.addOrder(jeanOrder);
-                    case 3:
-                        CustomerOrder shirtOrder = new CustomerOrder("Sh1", "Shirt", 5.00, currentUser.getEmail());
-                        customerService.addOrder(shirtOrder);
-
-                }
-                
             } catch (InvalidChoiceBuyItemException e) {
                 System.out.println(e);
             }
@@ -236,7 +243,7 @@ public class MainRunner {
             System.out.println("+   3.Buy an item              +");
             System.out.println("+   4.Replace an item          +");
             System.out.println("+   5.Logout                   +");
-            System.out.println("+   6.Show orders              +");
+            System.out.println("+   6.Create Invoice           +");
             System.out.println("+   7.Exit                     +");
             System.out.println("+==============================+");
 

@@ -6,6 +6,7 @@ public class CustomerOrder {
     private String itemName;
     private Double price;
     private String email;
+    private String invoiceNumber;
 
     public CustomerOrder() {
         this("N/A", "N/A", 0.0, "N/A");
@@ -27,6 +28,7 @@ public class CustomerOrder {
         this.price = price;
         this.email = email;
     }
+
 
     public Integer getOrderID() {
         return orderID;
