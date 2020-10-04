@@ -145,18 +145,57 @@ public class CustomerServiceRepo implements CustomerServiceRepoImpl {
             preparedStatement.setString(1, invoiceNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                String itemCode = resultSet.getString(1);
-                String itemName = resultSet.getString(2);
-                Double price = resultSet.getDouble(3);
-                String invoiceNum = resultSet.getString(4);
+                Integer itemId = resultSet.getInt(1);
+                String itemCode = resultSet.getString(2);
+                String itemName = resultSet.getString(3);
+                Double price = resultSet.getDouble(4);
+                String invoiceNum = resultSet.getString(5);
 
-                ItemInvoice itemInvoice = new ItemInvoice(itemCode, itemName, price, invoiceNum);
+                ItemInvoice itemInvoice = new ItemInvoice(itemId, itemCode, itemName, price, invoiceNum);
                 itemInvoiceList.add(itemInvoice);
             }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
+        return itemInvoiceList;
+    }
+
+    @Override
+    public boolean updateItem(ItemInvoice item) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement("update itemInvoice set itemCode = ?, itemName = ?, price = ?, invoiceNumber = ? where itemId = ?")){
+            preparedStatement.setString(1, item.getItemCode());
+            preparedStatement.setString(2, item.getItemName());
+            preparedStatement.setDouble(3, item.getPrice());
+            preparedStatement.setString(4, item.getInvoiceNumber());
+            preparedStatement.setInt(5, item.getItemId());
+
+            int update = preparedStatement.executeUpdate();
+            if(update > 0) {
+                return true;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateInvoice(Invoice invoice) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement("update invoice set invoiceDate = ?, totalCost = ? where invoiceNumber = ?")){
+            preparedStatement.setString(1, invoice.getInvoiceDate());
+            preparedStatement.setDouble(2, invoice.getTotalCost());
+            preparedStatement.setString(3, invoice.getInvoiceNumber());
+
+            int update = preparedStatement.executeUpdate();
+            if(update > 0) {
+                return true;
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 }

@@ -14,6 +14,8 @@ public interface CustomerServiceRepoImpl {
     public List<Invoice> getInvoiceByEmail(String email);
     public boolean addItemInvoice(ItemInvoice itemInvoice);
     public List<ItemInvoice> getAllItemsByInvoiceNumber(String invoiceNumber);
+    public boolean updateItem(ItemInvoice item);
+    public boolean updateInvoice(Invoice invoice);
 
 
 }

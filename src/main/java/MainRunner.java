@@ -109,6 +109,8 @@ public class MainRunner {
     private static void replaceItem(Scanner sc) {
         sc = new Scanner(System.in);
         String userInvoiceNumber = null;
+        Integer itemId;
+        int itemChoice;
         // how to replace an item
         //first we ne need to show them all the invoices related to the current user
         try {
@@ -124,10 +126,61 @@ public class MainRunner {
             //get all items corresponding the invoice number
             List<ItemInvoice> itemsList = customerService.getAllItemsByInvoiceNumber(userInvoiceNumber);
             itemsList.forEach(System.out::println);
-            System.out.println("Which item will you want to replace");
+            System.out.println("Which item will you want to replace?");
             //TODO get the desired item from the user, replace that in the itemInvoice database (so a update) and we all good)
 
+            if(sc.hasNextInt()) {
+                itemId = sc.nextInt();
+            } else {
+                throw new InputNoMatchOrNotFoundException("Sorry you did not enter an integer.");
+            }
+            ItemInvoice desiredItem = itemsList.stream().filter(item -> item.getItemId() == itemId).findAny().orElse(null);
+            if(desiredItem == null) {
+                throw new InputNoMatchOrNotFoundException("Item not found with that id.");
+            }
+
+            System.out.println("     Standalone Ecommerce App            ");
+            System.out.println("+=========================================+");
+            System.out.println("+  Items          Item Code         Price +");
+            System.out.println("+  1. Jacket      Ja1               $20   +" );
+            System.out.println("+  2. Jeans       Je1               $10   +");
+            System.out.println("+  3. Shirt       Sh1               $5    +");
+            System.out.println("+=========================================+");
+            System.out.println("Which item do you want to replace it with");
+
+            if(sc.hasNextInt()) {
+                itemChoice = sc.nextInt();
+            } else {
+                throw new InputNoMatchOrNotFoundException("Unable to read in your choice.");
+            }
+
+            switch (itemChoice) {
+                case 1:
+                    ItemInvoice jacketOrder = new ItemInvoice(itemId,"Ja1", "Jacket", 20.00, userInvoiceNumber);
+                    customerService.updateItem(jacketOrder);
+                    break;
+                case 2:
+                    ItemInvoice jeanOrder = new ItemInvoice(itemId,"Je1", "Jeans", 10.00, userInvoiceNumber);
+                    customerService.updateItem(jeanOrder);
+                case 3:
+                    ItemInvoice shirtOrder = new ItemInvoice(itemId,"Sh1", "Shirt", 5.00, userInvoiceNumber);
+                    customerService.updateItem(shirtOrder);
+
+            }
+            System.out.println("Successfully replaced!");
+            System.out.println("Here is your current invoice:");
+            List<ItemInvoice> newItemList = customerService.getAllItemsByInvoiceNumber(userInvoiceNumber);
+            Double newTotal = newItemList.stream().mapToDouble(item -> item.getPrice()).sum();
+            System.out.println("New total: " + newTotal);
+            Date date = new Date();
+            Invoice newInvoice = new Invoice(userInvoiceNumber, currentUser.getEmail(), date.toString(), newTotal);
+            System.out.println("New invoice:");
+            System.out.println(newInvoice);
+            customerService.updateInvoice(newInvoice);
+
         } catch (CurrentUserIsNullException e) {
+            System.out.println(e);
+        } catch (InputNoMatchOrNotFoundException e) {
             System.out.println(e);
         }
     }
